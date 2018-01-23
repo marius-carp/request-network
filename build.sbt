@@ -26,6 +26,16 @@ addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.fu
 
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
+resolvers ++= Seq(
+  "jitpack.io" at "https://jitpack.io"
+)
+
+//utils
+libraryDependencies ++= Seq(
+  "org.web3j"                  % "core"                      % "3.2.0",
+  "com.github.ipfs"            % "java-ipfs-api"             % "v1.2.0"
+)
+
 // Logging
 val logBackVersion = "1.2.3"
 libraryDependencies ++= Seq(
