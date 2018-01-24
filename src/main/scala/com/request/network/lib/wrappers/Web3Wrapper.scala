@@ -5,7 +5,10 @@ import org.web3j.protocol.Web3j
 import scala.concurrent.{Future, Promise}
 
 
-class Web3Wrapper(networkName: String, web3j: Web3j) {
+class Web3Wrapper(web3Provider: Option[Any], networkId: Option[Int]) {
+
+  val networkName: String = ???
+  val web3j: Web3j = ???
 
   def BN() = ???
 

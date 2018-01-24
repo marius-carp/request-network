@@ -4,7 +4,9 @@ import io.ipfs.api.IPFS
 
 import scala.concurrent.Future
 
-class IpfsWrapper(ipfs: IPFS) {
+class IpfsWrapper(publicIpfs: Boolean) {
+
+  val ipfs: IPFS = ???
 
   def addFile(data: String): Future[Any] = ???
 
