@@ -2,7 +2,7 @@ package com.request.network.lib.wrappers
 
 import org.web3j.protocol.Web3j
 
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.Future
 
 
 class Web3Wrapper(web3Provider: Option[Any], networkId: Option[Int]) {

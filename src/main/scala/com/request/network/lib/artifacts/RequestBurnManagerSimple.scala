@@ -2,7 +2,7 @@ package com.request.network.lib.artifacts
 
 import com.request.network.lib.artifacts.Abi.{Input, Output}
 
-case class RequestBurnManagerSimple(constant: Boolean,
+case class RequestBurnManagerSimpleAbi(constant: Boolean,
                                     input: List[Input],
                                     name: Option[AbiName],
                                     output: List[Output],
@@ -10,10 +10,14 @@ case class RequestBurnManagerSimple(constant: Boolean,
                                     stateMutability: Option[StateMutability],
                                     abiType: AbiType) extends Abi
 
+case class RequestBurnManagerSimple(abi: List[RequestBurnManagerSimpleAbi], networks: Map[String, NetworkArtifact])
+
 object RequestBurnManagerSimple {
 
-  private val abi: List[RequestBurnManagerSimple] = List(
-    RequestBurnManagerSimple(
+  def apply(): RequestBurnManagerSimple = new RequestBurnManagerSimple(abi, networks)
+
+  private val abi: List[RequestBurnManagerSimpleAbi] = List(
+    RequestBurnManagerSimpleAbi(
       constant = false,
       List(InputOutput(ReqBurnerContractAbiInputName, AddressAbiInputType)),
       Some(SetReqBurnerContractAbiName),
@@ -23,6 +27,9 @@ object RequestBurnManagerSimple {
       FunctionAbiType)
   )
 
-  def apply: List[RequestBurnManagerSimple] = abi
+  val networks: Map[String, NetworkArtifact] = Map(
+    "private" -> NetworkArtifact("0xf25186b5081ff5ce73482ad761db0eb0d25abfbf", 0),
+    "rinkeby" -> NetworkArtifact("0x6E51827948F057a354d01bA0a108Fdc7843B0d04", 1402858)
+  )
 
 }
