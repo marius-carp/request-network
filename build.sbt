@@ -36,6 +36,12 @@ libraryDependencies ++= Seq(
   "com.github.ipfs"            % "java-ipfs-api"             % "v1.2.0"
 )
 
+// Json
+libraryDependencies ++= Seq(
+  "com.typesafe.play"          %% "play-json"                % "2.6.2",
+  "com.kifi"                   %% "json-annotation"          % "0.3.1"
+)
+
 // Logging
 val logBackVersion = "1.2.3"
 libraryDependencies ++= Seq(

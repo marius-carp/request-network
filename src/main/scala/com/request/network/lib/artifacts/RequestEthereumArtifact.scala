@@ -1,8 +1,12 @@
 package com.request.network.lib.artifacts
 
+import com.kifi.macros.jsonstrict
 import com.request.network.lib.artifacts.Abi.{Input, Output}
+import com.request.network.lib.exception.RequestUnmarshalException
+import com.request.network.lib.util.FileUtil
+import play.api.libs.json.{JsError, JsSuccess, Json}
 
-
+@jsonstrict
 case class RequestEthereumArtifactAbi(constant: Boolean,
                                    input: List[Input],
                                    name: Option[AbiName],
@@ -11,28 +15,19 @@ case class RequestEthereumArtifactAbi(constant: Boolean,
                                    stateMutability: Option[StateMutability],
                                    abiType: AbiType) extends Abi
 
+@jsonstrict
 case class RequestEthereumArtifact(abi: List[RequestEthereumArtifactAbi], networks: Map[String, NetworkArtifact])
 
 object RequestEthereumArtifact {
 
-  def apply(): RequestEthereumArtifact = new RequestEthereumArtifact(abi, networks)
+  def apply(): RequestEthereumArtifact = {
+    val fileContent = FileUtil.readFileToString("RequestEthereum.json")
+    Json.parse(fileContent).validate[RequestEthereumArtifact] match {
+      case success: JsSuccess[RequestEthereumArtifact] =>
+        success.get
+      case error: JsError =>
+        throw RequestUnmarshalException(s"Error at unmarshalling RequestCore json, reason: $error")
+    }
+  }
 
-  val abi: List[RequestEthereumArtifactAbi] = List(
-    RequestEthereumArtifactAbi(
-      constant = false,
-      List(
-        InputOutput(RequestIdAbiInputName, Bytes32AbiInputType),
-        InputOutput(AdditionalsAbiInputName, Uint256AbiInputType)
-      ),
-      Some(PaymentAbiName),
-      List.empty[Output],
-      payable = true,
-      Some(PayableStateMutability),
-      FunctionAbiType)
-  )
-
-  val networks: Map[String, NetworkArtifact] = Map(
-    "private" -> NetworkArtifact("0xf12b5dd4ead5f743c6baa640b0216200e89b60da", 0),
-    "rinkeby" -> NetworkArtifact("0x0d5D6c5aB28737C182B9e67194451c2C6BcA8623", 1435761)
-  )
 }

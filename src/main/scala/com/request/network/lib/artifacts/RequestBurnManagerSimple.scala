@@ -1,7 +1,12 @@
 package com.request.network.lib.artifacts
 
+import com.kifi.macros.jsonstrict
 import com.request.network.lib.artifacts.Abi.{Input, Output}
+import com.request.network.lib.exception.RequestUnmarshalException
+import com.request.network.lib.util.FileUtil
+import play.api.libs.json.{JsError, JsSuccess, Json}
 
+@jsonstrict
 case class RequestBurnManagerSimpleAbi(constant: Boolean,
                                     input: List[Input],
                                     name: Option[AbiName],
@@ -10,26 +15,19 @@ case class RequestBurnManagerSimpleAbi(constant: Boolean,
                                     stateMutability: Option[StateMutability],
                                     abiType: AbiType) extends Abi
 
+@jsonstrict
 case class RequestBurnManagerSimple(abi: List[RequestBurnManagerSimpleAbi], networks: Map[String, NetworkArtifact])
 
 object RequestBurnManagerSimple {
 
-  def apply(): RequestBurnManagerSimple = new RequestBurnManagerSimple(abi, networks)
-
-  private val abi: List[RequestBurnManagerSimpleAbi] = List(
-    RequestBurnManagerSimpleAbi(
-      constant = false,
-      List(InputOutput(ReqBurnerContractAbiInputName, AddressAbiInputType)),
-      Some(SetReqBurnerContractAbiName),
-      List.empty[Output],
-      payable = false,
-      Some(NonPayableStateMutability),
-      FunctionAbiType)
-  )
-
-  val networks: Map[String, NetworkArtifact] = Map(
-    "private" -> NetworkArtifact("0xf25186b5081ff5ce73482ad761db0eb0d25abfbf", 0),
-    "rinkeby" -> NetworkArtifact("0x6E51827948F057a354d01bA0a108Fdc7843B0d04", 1402858)
-  )
+  def apply(): RequestBurnManagerSimple = {
+    val fileContent = FileUtil.readFileToString("RequestBurnManagerSimple.json")
+    Json.parse(fileContent).validate[RequestBurnManagerSimple] match {
+      case success: JsSuccess[RequestBurnManagerSimple] =>
+        success.get
+      case error: JsError =>
+        throw RequestUnmarshalException(s"Error at unmarshalling RequestBurnManagerSimple json, reason: $error")
+    }
+  }
 
 }

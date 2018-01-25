@@ -9,7 +9,7 @@ class RequestCoreService()(implicit
                            ipfs: IpfsWrapper,
                            web3Wrapper: Web3Wrapper,
                            requestCoreArtifact: RequestCoreArtifact) {
-  require(RequestCoreArtifact.networks.contains(web3Wrapper.networkName), s"RequestCore Artifact does not have configuration for network: ${web3Wrapper.networkName}")
+  require(requestCoreArtifact.networks.contains(web3Wrapper.networkName), s"RequestCore Artifact does not have configuration for network: ${web3Wrapper.networkName}")
 
   private val addressRequestCore: String = requestCoreArtifact.networks(web3Wrapper.networkName).address
   private val requestCore = ???

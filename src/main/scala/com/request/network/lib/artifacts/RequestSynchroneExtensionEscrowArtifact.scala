@@ -1,7 +1,12 @@
 package com.request.network.lib.artifacts
 
+import com.kifi.macros.jsonstrict
 import com.request.network.lib.artifacts.Abi.{Input, Output}
+import com.request.network.lib.exception.RequestUnmarshalException
+import com.request.network.lib.util.FileUtil
+import play.api.libs.json.{JsError, JsSuccess, Json}
 
+@jsonstrict
 case class RequestSynchroneExtensionEscrowArtifactAbi(constant: Boolean,
                                                    input: List[Input],
                                                    name: Option[AbiName],
@@ -10,30 +15,18 @@ case class RequestSynchroneExtensionEscrowArtifactAbi(constant: Boolean,
                                                    stateMutability: Option[StateMutability],
                                                    abiType: AbiType) extends Abi
 
+@jsonstrict
 case class RequestSynchroneExtensionEscrowArtifact(abi: List[RequestCoreArtifactAbi], networks: Map[String, NetworkArtifact])
 
 object RequestSynchroneExtensionEscrowArtifact {
 
-  def apply(): RequestSynchroneExtensionEscrowArtifact = new RequestSynchroneExtensionEscrowArtifact(abi, networks)
-
-  private val abi: List[RequestSynchroneExtensionEscrowArtifactAbi] = List(
-    RequestSynchroneExtensionEscrowArtifactAbi(
-      constant = true,
-      List(InputOutput(BlankAbiInputName, Bytes32AbiInputType)),
-      Some(EscrowsAbiName),
-      List(
-        InputOutput(CurrencyContractAbiInputName, AddressAbiInputType),
-        InputOutput(EscrowAbiInputName, AddressAbiInputType),
-        InputOutput(StateAbiInputName, Uint8AbiInputType),
-        InputOutput(BalanceAbiInputName, Uint256AbiInputType)
-      ),
-      payable = true,
-      Some(PayableStateMutability),
-      FunctionAbiType)
-  )
-
-  val networks: Map[String, NetworkArtifact] = Map(
-    "private" -> NetworkArtifact("0x345ca3e014aaf5dca488057592ee47305d9b3e10", 0),
-    "rinkeby" -> NetworkArtifact("0x8B9186213fFE76365167e12C6D9965774E5fed33", 1402856)
-  )
+  def apply(): RequestSynchroneExtensionEscrowArtifact = {
+    val fileContent = FileUtil.readFileToString("RequestSynchroneExtensionEscrow.json")
+    Json.parse(fileContent).validate[RequestSynchroneExtensionEscrowArtifact] match {
+      case success: JsSuccess[RequestSynchroneExtensionEscrowArtifact] =>
+        success.get
+      case error: JsError =>
+        throw RequestUnmarshalException(s"Error at unmarshalling RequestSynchroneExtensionEscrow json, reason: $error")
+    }
+  }
 }

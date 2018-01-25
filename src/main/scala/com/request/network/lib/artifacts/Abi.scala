@@ -1,13 +1,61 @@
 package com.request.network.lib.artifacts
 
+import com.kifi.macros.jsonstrict
 import com.request.network.lib.artifacts.Abi.{Input, Output}
+import AbiInputName.jsonFormat
+import AbiInputType.jsonFormat
+import AbiName.jsonFormat
+import StateMutability.jsonFormat
+import AbiType.jsonFormat
 
-case class InputOutput(name: AbiInputName, _type: AbiInputType)
+sealed trait AbiInputName
 
-trait AbiInputName
+object AbiInputName extends RequestArtifact[AbiInputName] {
+  override val knownValues: List[AbiInputName] = List (
+    BlankAbiInputName,
+    AdditionalsAbiInputName,
+    AmountAmountAbiInputName,
+    CurrencyContractParamsAmountAbiInputName,
+    DataParamsAmountAbiInputName,
+    ExpectedAmountAbiInputName,
+    ExtensionAmountAbiInputName,
+    ExtensionParamsAmountAbiInputName,
+    NewRateAbiInputName,
+    NewMaxAbiInputName,
+    NewOwnerAbiInputName,
+    PayerAbiInputName,
+    PreviousOwnerAbiInputName,
+    RequestIdAbiInputName,
+    RecipientAbiInputName,
+    ReqBurnerContractAbiInputName,
+    BalanceAbiInputName,
+    CreatorAbiInputName,
+    CurrencyContractAbiInputName,
+    ContractAddressAbiInputName,
+    DataAbiInputName,
+    DeltaAmountAbiInputName,
+    ExtensionAbiInputName,
+    NewContractAddressAbiInputName,
+    NewBurnManagerAbiInputName,
+    NewExtensionAbiInputName,
+    NewContractAbiInputName,
+    NewFeesManagerAbiInputName,
+    OldTrustedContractAddressAbiInputName,
+    OldExtensionAbiInputName,
+    oldContractAbiInputName,
+    PayeeAbiInputName,
+    StateAbiInputName,
+    HashAbiInputName,
+    SignerAbiInputName,
+    RAbiInputName,
+    SAbiInputName,
+    VAbiInputName,
+    EscrowAbiInputName,
+    RequestCoreAddressAbiInputName
+  )
+}
 
 case object BlankAbiInputName extends AbiInputName {override def toString: String = "" }
-
 case object AdditionalsAbiInputName extends AbiInputName { override def toString: String = "additionals"}
 case object AmountAmountAbiInputName extends AbiInputName { override def toString: String = "amount"}
 case object CurrencyContractParamsAmountAbiInputName extends AbiInputName { override def toString: String = "currencyContract"}
@@ -23,8 +71,6 @@ case object PreviousOwnerAbiInputName extends AbiInputName { override def toStri
 case object RequestIdAbiInputName extends AbiInputName { override def toString: String = "requestId"}
 case object RecipientAbiInputName extends AbiInputName { override def toString: String = "recipient"}
 case object ReqBurnerContractAbiInputName extends AbiInputName { override def toString: String = "reqBurnerContract"}
-
-
 case object BalanceAbiInputName extends AbiInputName { override def toString: String = "balance"}
 case object CreatorAbiInputName extends AbiInputName { override def toString: String = "creator"}
 case object CurrencyContractAbiInputName extends AbiInputName { override def toString: String = "currencyContract"}
@@ -42,19 +88,27 @@ case object OldExtensionAbiInputName extends AbiInputName { override def toStrin
 case object oldContractAbiInputName extends AbiInputName { override def toString: String = "oldContract"}
 case object PayeeAbiInputName extends AbiInputName { override def toString: String = "payee"}
 case object StateAbiInputName extends AbiInputName { override def toString: String = "state"}
-
-
 case object HashAbiInputName extends AbiInputName { override def toString: String = "hash"}
 case object SignerAbiInputName extends AbiInputName { override def toString: String = "signer"}
 case object RAbiInputName extends AbiInputName { override def toString: String = "r"}
 case object SAbiInputName extends AbiInputName { override def toString: String = "s"}
 case object VAbiInputName extends AbiInputName { override def toString: String = "v"}
-
-
 case object EscrowAbiInputName extends AbiInputName { override def toString: String = "escrow"}
 case object RequestCoreAddressAbiInputName extends AbiInputName { override def toString: String = "requestCoreAddress"}
 
-trait AbiInputType
+sealed trait AbiInputType
+
+object AbiInputType  extends RequestArtifact[AbiInputType] {
+  val knownValues: List[AbiInputType] = List(
+    AddressAbiInputType,
+    Bytes32AbiInputType,
+    BoolAbiInputType,
+    Int256AbiInputType,
+    Uint8AbiInputType,
+    Uint256AbiInputType
+  )
+}
+
 case object AddressAbiInputType extends AbiInputType { override def toString: String = "address"}
 case object Bytes32AbiInputType extends AbiInputType { override def toString: String = "bytes32"}
 case object BoolAbiInputType extends AbiInputType { override def toString: String = "bool"}
@@ -62,8 +116,90 @@ case object Int256AbiInputType extends AbiInputType { override def toString: Str
 case object Uint8AbiInputType extends AbiInputType { override def toString: String = "uint8"}
 case object Uint256AbiInputType extends AbiInputType { override def toString: String = "uint256"}
 
+sealed trait AbiName
 
-trait AbiName
+object AbiName extends RequestArtifact[AbiName] {
+  val knownValues: List[AbiName] = List(
+    CollectEstimationAbiName,
+    CollectForReqBurningAbiName,
+    FeesPer10000AbiName,
+    MaxFeesAbiName,
+    OwnerAbiName,
+    OwnershipTransferredAbiName,
+    PausedAbiName,
+    ReqBurnerContractAbiName,
+    SetReqBurnerContractAbiName,
+    SetFeesPerTenThousandAbiName,
+    SetMaxCollectableAbiName,
+    TransferOwnershipAbiName,
+    UnpauseAbiName,
+    AcceptAbiName,
+    AcceptedAbiName,
+    AdminRemoveTrustedCurrencyContractAbiName,
+    AdminAddTrustedExtensionAbiName,
+    AdminRemoveExtensionAbiName,
+    AdminAddTrustedCurrencyContractAbiName,
+    CreateRequestAbiName,
+    CreatedAbiName,
+    CancelAbiName,
+    CanceledAbiName,
+    GetPayeeAbiName,
+    GetPayerAbiName,
+    GetStateAbiName,
+    GetExtensionAbiName,
+    GetCollectEstimationAbiName,
+    GetBalanceAbiName,
+    GetStatusExtensionAbiName,
+    GetCurrencyContractAbiName,
+    GetStatusContractAbiName,
+    GetExpectedAmountAbiName,
+    NumRequestsAbiName,
+    NewPayerAbiName,
+    NewExpectedAmountAbiName,
+    NewExtensionAbiName,
+    NewDataAbiName,
+    NewTrustedContractAbiName,
+    NewTrustedExtensionAbiName,
+    NewBurnManagerAbiName,
+    RequestsAbiName,
+    RemoveTrustedContractAbiName,
+    RemoveTrustedExtensionAbiName,
+    SetExtensionAbiName,
+    SetPayerAbiName,
+    SetPayeeAbiName,
+    SetDataAbiName,
+    SetExpectedAmountAbiName,
+    SetBurnManagerAbiName,
+    TrustedNewBurnManagerAbiName,
+    TrustedCurrencyContractsAbiName,
+    TrustedExtensionsAbiName,
+    UpdateBalanceAbiName,
+    UpdateExpectedAmountAbiName,
+    VersionAbiName,
+    AdditionalActionAbiName,
+    CreateRequestAsPayeeAbiName,
+    CreateRequestAsPayerAbiName,
+    CheckRequestSignatureAbiName,
+    EthToWithdrawAbiName,
+    EtherAvailableToWithdrawAbiName,
+    FundOrderAbiName,
+    IsValidSignatureAbiName,
+    PaymentActionAbiName,
+    PaymentAbiName,
+    RequestCoreAbiName,
+    RefundActionAbiName,
+    SubtractActionAbiName,
+    WithdrawAbiName,
+    EscrowsAbiName,
+    EscrowPaymentAbiName,
+    EscrowReleaseRequestAbiName,
+    EscrowRefundRequestAbiName,
+    ReleaseToPayeeActionAbiName,
+    RefundAbiName,
+    ReleaseToPayerActionAbiName
+  )
+}
+
 case object CollectEstimationAbiName extends AbiName { override def toString: String = "collectEstimation"}
 case object CollectForReqBurningAbiName extends AbiName { override def toString: String = "collectForReqBurning"}
 case object FeesPer10000AbiName extends AbiName { override def toString: String = "feesPer10000"}
@@ -77,7 +213,6 @@ case object SetFeesPerTenThousandAbiName extends AbiName { override def toString
 case object SetMaxCollectableAbiName extends AbiName { override def toString: String = "setMaxCollectable"}
 case object TransferOwnershipAbiName extends AbiName { override def toString: String = "transferOwnership"}
 case object UnpauseAbiName extends AbiName { override def toString: String = "Unpause"}
-
 case object AcceptAbiName extends AbiName { override def toString: String = "accept"}
 case object AcceptedAbiName extends AbiName { override def toString: String = "Accepted"}
 case object AdminRemoveTrustedCurrencyContractAbiName extends AbiName { override def toString: String = "adminRemoveTrustedCurrencyContract"}
@@ -121,8 +256,6 @@ case object TrustedExtensionsAbiName extends AbiName { override def toString: St
 case object UpdateBalanceAbiName extends AbiName { override def toString: String = "updateBalance"}
 case object UpdateExpectedAmountAbiName extends AbiName { override def toString: String = "updateExpectedAmount"}
 case object VersionAbiName extends AbiName { override def toString: String = "VERSION"}
-
-
 case object AdditionalActionAbiName extends AbiName { override def toString: String = "additionalAction"}
 case object CreateRequestAsPayeeAbiName extends AbiName { override def toString: String = "createRequestAsPayee"}
 case object CreateRequestAsPayerAbiName extends AbiName { override def toString: String = "createRequestAsPayer"}
@@ -137,7 +270,6 @@ case object RequestCoreAbiName extends AbiName { override def toString: String =
 case object RefundActionAbiName extends AbiName { override def toString: String = "refundAction"}
 case object SubtractActionAbiName extends AbiName { override def toString: String = "subtractAction"}
 case object WithdrawAbiName extends AbiName { override def toString: String = "withdraw"}
-
 case object EscrowsAbiName extends AbiName { override def toString: String = "escrows"}
 case object EscrowPaymentAbiName extends AbiName { override def toString: String = "EscrowPayment"}
 case object EscrowReleaseRequestAbiName extends AbiName { override def toString: String = "EscrowReleaseRequest"}
@@ -146,12 +278,29 @@ case object ReleaseToPayeeActionAbiName extends AbiName { override def toString:
 case object RefundAbiName extends AbiName { override def toString: String = "refund"}
 case object ReleaseToPayerActionAbiName extends AbiName { override def toString: String = "releaseToPayerAction"}
 
-trait StateMutability
-case object PayableStateMutability extends StateMutability
-case object NonPayableStateMutability extends StateMutability
-case object ViewStateMutability extends StateMutability
+sealed trait StateMutability
 
-trait AbiType
+object StateMutability  extends RequestArtifact [StateMutability] {
+  val knownValues: List[StateMutability] = List(
+    PayableStateMutability,
+    NonPayableStateMutability,
+    ViewStateMutability
+  )
+}
+
+case object PayableStateMutability extends StateMutability { override def toString: String = "payable"}
+case object NonPayableStateMutability extends StateMutability { override def toString: String = "nonpayable"}
+case object ViewStateMutability extends StateMutability { override def toString: String = "view"}
+
+sealed trait AbiType
+
+object AbiType  extends RequestArtifact [AbiType]{
+  override val knownValues: List[AbiType] = List(
+    FunctionAbiType,
+    EventAbiType
+  )
+}
+
 case object FunctionAbiType extends AbiType
 case object EventAbiType extends AbiType
 
@@ -161,20 +310,14 @@ trait Abi {
   val name: Option[AbiName]
   val output: List[Output]
   val payable: Boolean
-  val stateMutability: StateMutability
+  val stateMutability: Option[StateMutability]
   val abiType: AbiType
 }
+
+@jsonstrict
+case class InputOutput(name: AbiInputName, _type: AbiInputType)
 
 object Abi {
   type Output = InputOutput
   type Input = InputOutput
 }
-
-
-/*
-case object PaymentAction extends Abi {
-  val constant: Boolean
-  val input: InputOutput
-  val name: String
-  val output: InputOutput
-}*/
