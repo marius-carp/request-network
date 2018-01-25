@@ -21,7 +21,7 @@ case class RequestEthereumArtifact(abi: List[RequestEthereumArtifactAbi], networ
 object RequestEthereumArtifact {
 
   def apply(): RequestEthereumArtifact = {
-    val fileContent = FileUtil.readFileToString("RequestEthereum.json")
+    val fileContent = FileUtil.readFileToString("contracts/RequestEthereum.json")
     Json.parse(fileContent).validate[RequestEthereumArtifact] match {
       case success: JsSuccess[RequestEthereumArtifact] =>
         success.get

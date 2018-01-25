@@ -21,7 +21,7 @@ case class RequestCoreArtifact(abi: List[RequestCoreArtifactAbi], networks: Map[
 object RequestCoreArtifact {
 
   def apply(): RequestCoreArtifact = {
-    val fileContent = FileUtil.readFileToString("RequestCore.json")
+    val fileContent = FileUtil.readFileToString("contracts/RequestCore.json")
     Json.parse(fileContent).validate[RequestCoreArtifact] match {
       case success: JsSuccess[RequestCoreArtifact] =>
         success.get

@@ -21,7 +21,7 @@ case class RequestBurnManagerSimple(abi: List[RequestBurnManagerSimpleAbi], netw
 object RequestBurnManagerSimple {
 
   def apply(): RequestBurnManagerSimple = {
-    val fileContent = FileUtil.readFileToString("RequestBurnManagerSimple.json")
+    val fileContent = FileUtil.readFileToString("contracts/RequestBurnManagerSimple.json")
     Json.parse(fileContent).validate[RequestBurnManagerSimple] match {
       case success: JsSuccess[RequestBurnManagerSimple] =>
         success.get

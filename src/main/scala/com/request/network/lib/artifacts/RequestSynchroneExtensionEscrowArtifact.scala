@@ -21,7 +21,7 @@ case class RequestSynchroneExtensionEscrowArtifact(abi: List[RequestCoreArtifact
 object RequestSynchroneExtensionEscrowArtifact {
 
   def apply(): RequestSynchroneExtensionEscrowArtifact = {
-    val fileContent = FileUtil.readFileToString("RequestSynchroneExtensionEscrow.json")
+    val fileContent = FileUtil.readFileToString("contracts/RequestSynchroneExtensionEscrow.json")
     Json.parse(fileContent).validate[RequestSynchroneExtensionEscrowArtifact] match {
       case success: JsSuccess[RequestSynchroneExtensionEscrowArtifact] =>
         success.get
