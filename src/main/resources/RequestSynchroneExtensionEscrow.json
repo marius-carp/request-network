@@ -1,0 +1,12 @@
+{
+  "networks": {
+    "private": {
+      "address": "0x345ca3e014aaf5dca488057592ee47305d9b3e10",
+      "blockNumber": 0
+    },
+    "rinkeby": {
+      "address": "0x8B9186213fFE76365167e12C6D9965774E5fed33",
+      "blockNumber": 1402856
+    }
+  }
+}
