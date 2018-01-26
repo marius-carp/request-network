@@ -36,6 +36,11 @@ libraryDependencies ++= Seq(
   "com.github.ipfs"            % "java-ipfs-api"             % "v1.2.0"
 )
 
+//config
+libraryDependencies ++= Seq(
+  "com.typesafe"               % "config"                    % "1.3.1"
+)
+
 // Json
 libraryDependencies ++= Seq(
   "com.typesafe.play"          %% "play-json"                % "2.6.2",

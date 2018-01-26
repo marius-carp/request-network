@@ -1,18 +1,32 @@
 package com.request.network.lib.wrappers
 
-import org.web3j.protocol.Web3j
+import com.request.network.lib.config.RequestConfig
+import org.web3j.protocol.{Web3j, Web3jService}
+import org.web3j.protocol.http.HttpService
 
 import scala.concurrent.Future
 
 
-class Web3Wrapper(web3Provider: Option[Any], networkId: Option[Int]) {
+class Web3Wrapper(web3jService: Option[Web3jService], networkId: Option[Int])
+                 (implicit requestConfig: RequestConfig) {
 
-  val networkName: String = ???
-  val web3j: Web3j = ???
+  val web3j: Web3j = Web3j.build(web3jService.getOrElse(
+    new HttpService(requestConfig.ethereumNodeUrlDefault(requestConfig.ethereumDefault)))
+  )
+  val networkName: String = networkId.map(getNetworkName).getOrElse(requestConfig.ethereumDefault)
 
   def BN() = ???
 
-  def getNetworkName(networkId: Int): String = ???
+  def getNetworkName(networkId: Int): String = {
+    networkId match {
+      case 1 => "main"
+      case 2 => "morden"
+      case 3 => "ropsten"
+      case 4 => "rinkeby"
+      case 42 => "kovan"
+      case _ => "private"
+    }
+  }
 
   def broadcastMethod() = ???
 
