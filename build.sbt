@@ -30,15 +30,16 @@ resolvers ++= Seq(
   "jitpack.io" at "https://jitpack.io"
 )
 
-//utils
+//api
 libraryDependencies ++= Seq(
   "org.web3j"                  % "core"                      % "3.2.0",
   "com.github.ipfs"            % "java-ipfs-api"             % "v1.2.0"
 )
 
-//config
+//util
 libraryDependencies ++= Seq(
-  "com.typesafe"               % "config"                    % "1.3.1"
+  "com.typesafe"               % "config"                    % "1.3.1",
+  "org.scala-lang.modules"     %% "scala-java8-compat"       % "0.8.0"
 )
 
 // Json

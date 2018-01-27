@@ -22,4 +22,7 @@ class RequestConfig(rawConfig: Config) {
     } yield (entry.getKey, entry.getValue.unwrapped().toString)).toMap
   }
 
+  val ethereumGasPriceDefault: Int = ethereum.getInt("gasPriceDefault")
+  val EthereumGasPriceMinimumCriticalInWei: Int = ethereum.getInt("gasPriceMinimumCriticalInWei")
+
 }
