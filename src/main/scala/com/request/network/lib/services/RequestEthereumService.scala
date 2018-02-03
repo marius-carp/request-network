@@ -2,13 +2,13 @@ package com.request.network.lib.services
 
 import com.request.network.lib.artifacts.{RequestCoreArtifact, RequestEthereumArtifact}
 import com.request.network.lib.config.RequestConfig
-import com.request.network.lib.contracts.{RequestCore, RequestEthereum}
+import com.request.network.lib.contracts.RequestEthereum
 import com.request.network.lib.data.{RequestAdditional, RequestExtension, RequestOption}
 import com.request.network.lib.wrappers.{IpfsWrapper, Web3Wrapper}
 import org.web3j.crypto.WalletUtils
 import org.web3j.tx.{Contract, ManagedTransaction}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class RequestEthereumService()(implicit ipfsWrapper: IpfsWrapper,
                                web3Wrapper: Web3Wrapper,
@@ -46,7 +46,7 @@ class RequestEthereumService()(implicit ipfsWrapper: IpfsWrapper,
 
   def additionalAction(requestId: String, amount: Double, options: Option[RequestOption]) = ???
 
-  def getRequest(requestId: String) = requestCoreService.getRequest(requestId)
+  def getRequest(requestId: String)(implicit executionContext: ExecutionContext) = requestCoreService.getRequest(requestId)
 
   def getRequestEvents(requestId: String, fromBlock: Option[Int], toBlock: Option[Int]) =
     requestCoreService.getRequestEvents(requestId, fromBlock, toBlock)

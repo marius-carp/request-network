@@ -13,8 +13,8 @@ object RequestSynchroneExtensionEscrowArtifact {
   def apply(): RequestSynchroneExtensionEscrowArtifact = {
     val fileContent = FileUtil.readFileToString("RequestSynchroneExtensionEscrow.json")
     Json.parse(fileContent).validate[RequestSynchroneExtensionEscrowArtifact] match {
-      case success: JsSuccess[RequestSynchroneExtensionEscrowArtifact] =>
-        success.get
+      case JsSuccess(requestSynchroneExtensionEscrowArtifact, _) =>
+        requestSynchroneExtensionEscrowArtifact
       case error: JsError =>
         throw RequestUnmarshalException(s"Error at unmarshalling RequestSynchroneExtensionEscrow json, reason: $error")
     }
