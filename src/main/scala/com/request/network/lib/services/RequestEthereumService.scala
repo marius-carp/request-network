@@ -46,8 +46,6 @@ class RequestEthereumService()(implicit ipfsWrapper: IpfsWrapper,
 
   def additionalAction(requestId: String, amount: Double, options: Option[RequestOption]) = ???
 
-  def getRequestCurrencyContractInfo(requestId: String): Future[Unit] = Future.successful[Unit](Unit)
-
   def getRequest(requestId: String) = requestCoreService.getRequest(requestId)
 
   def getRequestEvents(requestId: String, fromBlock: Option[Int], toBlock: Option[Int]) =
@@ -56,6 +54,11 @@ class RequestEthereumService()(implicit ipfsWrapper: IpfsWrapper,
   def decodeInputData(data: Any) = ???
 
   def getRequestEventsCurrencyContractInfo(requestId: String, fromBlock: Option[Int], toBlock: Option[Int]) = ???
-
-
 }
+
+object RequestEthereumService {
+  def getRequestCurrencyContractInfo(requestId: String): Future[String] = Future.successful("{}")
+  def getRequestExtensionInfo(requestId: String): Future[String] = Future.successful("{}")
+}
+
+
