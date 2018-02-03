@@ -13,8 +13,8 @@ object RequestCoreArtifact {
   def apply(): RequestCoreArtifact = {
     val fileContent = FileUtil.readFileToString("RequestCore.json")
     Json.parse(fileContent).validate[RequestCoreArtifact] match {
-      case success: JsSuccess[RequestCoreArtifact] =>
-        success.get
+      case JsSuccess(requestCoreArtifact, _) =>
+        requestCoreArtifact
       case error: JsError =>
         throw RequestUnmarshalException(s"Error at unmarshalling RequestCore json, reason: $error")
     }

@@ -1,6 +1,9 @@
 package com.request.network.lib.wrappers
 
+import java.util.concurrent.CompletableFuture
+
 import com.request.network.lib.config.RequestConfig
+import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, EthTransaction}
 import org.web3j.protocol.{Web3j, Web3jService}
 import org.web3j.protocol.http.HttpService
 
@@ -14,8 +17,6 @@ class Web3Wrapper(web3jService: Option[Web3jService], networkId: Option[Int])
     new HttpService(requestConfig.ethereumNodeUrlDefault(requestConfig.ethereumDefault)))
   )
   val networkName: String = networkId.map(getNetworkName).getOrElse(requestConfig.ethereumDefault)
-
-  def BN() = ???
 
   def getNetworkName(networkId: Int): String = {
     networkId match {
@@ -50,9 +51,9 @@ class Web3Wrapper(web3jService: Option[Web3jService], networkId: Option[Int])
 
   def setUpOptions(options: Any): Any = ???
 
-  def getTransactionReceipt(hash: String): Future[Any] = ???
+  def getTransactionReceipt(hash: String): CompletableFuture[EthGetTransactionReceipt] = web3j.ethGetTransactionReceipt(hash).sendAsync()
 
-  def getTransaction(hash: String): Future[Any] = ???
+  def getTransaction(hash: String): CompletableFuture[EthTransaction] = web3j.ethGetTransactionByHash(hash).sendAsync()
 
   def getBlockTimestamp(blockNumber: Int): Future[Any] = ???
 

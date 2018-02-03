@@ -13,8 +13,8 @@ object RequestBurnManagerSimple {
   def apply(): RequestBurnManagerSimple = {
     val fileContent = FileUtil.readFileToString("RequestBurnManagerSimple.json")
     Json.parse(fileContent).validate[RequestBurnManagerSimple] match {
-      case success: JsSuccess[RequestBurnManagerSimple] =>
-        success.get
+      case JsSuccess(requestBurnManagerSimple, _) =>
+        requestBurnManagerSimple
       case error: JsError =>
         throw RequestUnmarshalException(s"Error at unmarshalling RequestBurnManagerSimple json, reason: $error")
     }
