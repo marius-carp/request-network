@@ -2,7 +2,9 @@ package com.request.network.lib.services
 
 import com.request.network.lib.artifacts.RequestCoreArtifact
 import com.request.network.lib.config.RequestConfig
-import com.request.network.lib.contracts.RequestCore
+import com.request.network.lib.contracts.{RequestCore, RequestEthereum}
+import com.request.network.lib.data.requestCore.{RequestCoreRequest, RequestCoreRequestData}
+import com.request.network.lib.exception.RequestNetworkServiceException
 import com.request.network.lib.wrappers.{IpfsWrapper, Web3Wrapper}
 import org.web3j.crypto.WalletUtils
 import org.web3j.tx.{Contract, ManagedTransaction}
@@ -10,7 +12,7 @@ import org.web3j.tx.{Contract, ManagedTransaction}
 import scala.concurrent.{ExecutionContext, Future}
 
 class RequestCoreService()(implicit
-                           ipfs: IpfsWrapper,
+                           ipfsWrapper: IpfsWrapper,
                            web3Wrapper: Web3Wrapper,
                            requestCoreArtifact: RequestCoreArtifact,
                            requestConfig: RequestConfig) {
@@ -22,12 +24,12 @@ class RequestCoreService()(implicit
   val addressRequestCore: String =
     requestCoreArtifact.networks(web3Wrapper.networkName).address
 
-  //TODO not sure if we need this
-  private val credentials =
-    WalletUtils.loadCredentials("password", "/path/to/walletfile")
-
-  private val requestCore: RequestCore = RequestCore
-    .deploy(web3Wrapper.web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT)
+  private val credentials = WalletUtils.loadCredentials("password", "/path/to/walletfile")
+  //TODO get contracts by network name
+  private val requestCore: RequestCore =
+    RequestCore.deploy(web3Wrapper.web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT).send()
+  private val requestEthereum: RequestEthereum = RequestEthereum
+    .deploy(web3Wrapper.web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT, this.addressRequestCore)
     .send()
 
   /**
@@ -60,7 +62,8 @@ class RequestCoreService()(implicit
     } else {
       requestCore
         .getCollectEstimation(expectedAmount.bigInteger, currencyContract, extension)
-        .sendAsync().asScala
+        .sendAsync()
+        .asScala
         .map(BigInt(_))
     }
   }
@@ -70,29 +73,57 @@ class RequestCoreService()(implicit
     * @param   requestId    requestId of the request
     * @return  future of the object containing the request
     */
-  def getRequest(requestId: String): Future[Any] = {
-    if(!web3Wrapper.isHexStrictBytes32(requestId)) {
-      Future.failed(new RuntimeException("requestId must be a 32 bytes hex string"))
+  def getRequest(requestId: String)(implicit executionContext: ExecutionContext): Future[RequestCoreRequest] = {
+    if (!web3Wrapper.isHexStrictBytes32(requestId)) {
+      Future.failed(RequestNetworkServiceException("requestId must be a 32 bytes hex string"))
     } else {
-      ???
+      requestCore
+        .requests(requestId.getBytes)
+        .sendAsync()
+        .asScala
+        .flatMap { request =>
+          if (request.getValue1.equals(RequestCoreRequest.EMPTY_BYTES_32)) { //creator
+            Future.failed(RequestNetworkServiceException("request not found"))
+          } else {
+
+            val currencyContractFuture = RequestEthereumService.getRequestCurrencyContractInfo(requestId)
+            //TODO I cant find anywhere this method?!?
+            val extensionFuture = RequestEthereumService.getRequestExtensionInfo(requestId)
+
+            val dataFuture =
+              if (!request.getValue9.equals("")) {
+                ipfsWrapper.getFile(request.getValue9).map { fileContent =>
+                  Some(RequestCoreRequestData(fileContent, request.getValue9))
+                }
+              } else {
+                Future.successful(None)
+              }
+
+            for {
+              contract  <- currencyContractFuture
+              extension <- extensionFuture
+              data      <- dataFuture
+            } yield {
+              RequestCoreRequest(request, contract, extension, data)
+            }
+          }.recoverWith {
+            case e: Exception =>
+              throw RequestNetworkServiceException(e.getMessage)
+          }
+        }
     }
   }
 
-  /**
-    * get a request and method called by the hash of a transaction
-    * @param   hash    hash of the ethereum transaction
-    * @return  future of the object containing the request and the transaction
-    */
-  def getRequestByTransactionHash(hash: String)(
-    implicit executionContext: ExecutionContext): Future[Any] = {
+  def getRequestByTransactionHash(hash: String)(implicit executionContext: ExecutionContext): Future[Any] = {
     web3Wrapper.getTransaction(hash).asScala.map { ethTransaction =>
-      ethTransaction.getTransaction.asScala.map { transaction =>
-        val ccyContract = transaction.getTo
+      ethTransaction.getTransaction.asScala
+        .map { transaction =>
+          val ccyContract = transaction.getTo
 
-        val ccyContractservice = ???
-
-        ???
-      }.getOrElse(new RuntimeException("transaction not found"))
+          val ccyContractservice = ???
+          ???
+        }
+        .getOrElse(new RuntimeException("transaction not found"))
     }
   }
 

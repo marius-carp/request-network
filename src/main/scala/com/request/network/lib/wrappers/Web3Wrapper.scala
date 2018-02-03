@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture
 
 import com.request.network.lib.config.RequestConfig
 import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, EthTransaction}
+import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.{Web3j, Web3jService}
 import org.web3j.protocol.http.HttpService
 
@@ -37,11 +38,13 @@ class Web3Wrapper(web3jService: Option[Web3jService], networkId: Option[Int])
 
   def arrayToBytes32(array: IndexedSeq[Any], length: Int): IndexedSeq[Any] = ???
 
-  def isAddressNoChecksum(address: String): Boolean = ???
+  def isAddressNoChecksum(address: String): Boolean =
+    WalletUtils.isValidAddress(address)
 
   def areSameAddressesNoChecksum(address1: String, address2: String) = ???
 
-  def isHexStrictBytes32(hex: String): Boolean = ???
+  def isHexStrictBytes32(hex: String): Boolean =
+    hex.matches("/^(-)?0x[0-9a-f]+$/i") && hex.length == 66 // '0x' + 32 bytes * 2 characters = 66
 
   def decodeInputData(abi: IndexedSeq[Any], data: String): Any = ???
 
@@ -56,6 +59,5 @@ class Web3Wrapper(web3jService: Option[Web3jService], networkId: Option[Int])
   def getTransaction(hash: String): CompletableFuture[EthTransaction] = web3j.ethGetTransactionByHash(hash).sendAsync()
 
   def getBlockTimestamp(blockNumber: Int): Future[Any] = ???
-
 
 }
