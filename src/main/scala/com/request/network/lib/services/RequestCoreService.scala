@@ -33,7 +33,7 @@ class RequestCoreService()(implicit
     .send()
 
   /**
-    * get the number of the last request (N.B: number !== id)
+    * get the number of the last request
     * @return  future of the number of the last request
     */
   def getCurrentNumRequest(implicit executionContext: ExecutionContext): Future[BigInt] =
@@ -115,16 +115,23 @@ class RequestCoreService()(implicit
   }
 
   def getRequestByTransactionHash(hash: String)(implicit executionContext: ExecutionContext): Future[Any] = {
-    web3Wrapper.getTransaction(hash).asScala.map { ethTransaction =>
-      ethTransaction.getTransaction.asScala
-        .map { transaction =>
-          val ccyContract = transaction.getTo
+    for {
+      ethTransaction <- web3Wrapper.getTransaction(hash)
+      transaction <- ethTransaction.getTransaction.asScala
+      txReceipt <- web3Wrapper.getTransactionReceipt(hash)
+      transactionReceipt <- txReceipt.getTransactionReceipt.asScala
+    } yield {
+      if(transactionReceipt.getStatus != "0x1" && transactionReceipt.getStatus != "1") //TODO get status is throwing an exception
+        throw RequestNetworkServiceException("transaction has failed")
+      else {
+        val request = web3Wrapper.getTransactionByHash(hash)
+        getRequest(request.getId)
+      }
 
-          val ccyContractservice = ???
-          ???
-        }
-        .getOrElse(new RuntimeException("transaction not found"))
     }
+
+
+
   }
 
   def getRequestEvents(requestId: String, fromBlock: Option[Int], toBlock: Option[Int]) = ???

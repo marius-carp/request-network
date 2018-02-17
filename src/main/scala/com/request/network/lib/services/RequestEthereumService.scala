@@ -51,7 +51,9 @@ class RequestEthereumService()(implicit ipfsWrapper: IpfsWrapper,
   def getRequestEvents(requestId: String, fromBlock: Option[Int], toBlock: Option[Int]) =
     requestCoreService.getRequestEvents(requestId, fromBlock, toBlock)
 
-  def decodeInputData(data: Any) = ???
+  def decodeInputData(data: Any) = {
+    requestEthereum
+  }
 
   def getRequestEventsCurrencyContractInfo(requestId: String, fromBlock: Option[Int], toBlock: Option[Int]) = ???
 }
