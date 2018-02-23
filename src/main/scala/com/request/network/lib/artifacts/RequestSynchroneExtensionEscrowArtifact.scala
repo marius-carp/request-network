@@ -1,14 +1,14 @@
 package com.request.network.lib.artifacts
 
-import com.kifi.macros.jsonstrict
 import com.request.network.lib.exception.RequestUnmarshalException
 import com.request.network.lib.util.FileUtil
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
-@jsonstrict
 case class RequestSynchroneExtensionEscrowArtifact(networks: Map[String, NetworkArtifact])
 
 object RequestSynchroneExtensionEscrowArtifact {
+
+  implicit val requestSynchroneExtensionEscrowArtifactFormat = Json.format[RequestSynchroneExtensionEscrowArtifact]
 
   def apply(): RequestSynchroneExtensionEscrowArtifact = {
     val fileContent = FileUtil.readFileToString("RequestSynchroneExtensionEscrow.json")

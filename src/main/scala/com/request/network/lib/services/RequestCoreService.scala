@@ -1,5 +1,6 @@
 package com.request.network.lib.services
 
+import com.micronautics.web3j.Ether
 import com.request.network.lib.artifacts.RequestCoreArtifact
 import com.request.network.lib.config.RequestConfig
 import com.request.network.lib.contracts.{RequestCore, RequestEthereum}
@@ -53,7 +54,7 @@ class RequestCoreService()(implicit
     * @param   extension         address of the extension contract of the request
     * @return  future of the number of wei needed to create the request
     */
-  def getCollectEstimation(expectedAmount: BigInt, currencyContract: String, extension: String)(
+  def getCollectEstimation(expectedAmount: Ether, currencyContract: String, extension: String)(
       implicit executionContext: ExecutionContext): Future[BigInt] = {
     if (!web3Wrapper.isAddressNoChecksum(currencyContract)) {
       Future.failed(new RuntimeException("currencyContract must be a valid eth address"))

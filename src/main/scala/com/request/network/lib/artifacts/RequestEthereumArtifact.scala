@@ -1,14 +1,14 @@
 package com.request.network.lib.artifacts
 
-import com.kifi.macros.jsonstrict
 import com.request.network.lib.exception.RequestUnmarshalException
 import com.request.network.lib.util.FileUtil
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
-@jsonstrict
 case class RequestEthereumArtifact(networks: Map[String, NetworkArtifact])
 
 object RequestEthereumArtifact {
+
+  implicit val requestEthereumArtifactFormat = Json.format[RequestEthereumArtifact]
 
   def apply(): RequestEthereumArtifact = {
     val fileContent = FileUtil.readFileToString("RequestEthereum.json")

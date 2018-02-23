@@ -1,5 +1,6 @@
 package com.request.network.lib.services
 
+import com.micronautics.web3j.Address
 import com.request.network.lib.artifacts.{RequestCoreArtifact, RequestEthereumArtifact}
 import com.request.network.lib.config.RequestConfig
 import com.request.network.lib.contracts.RequestEthereum
@@ -20,7 +21,7 @@ class RequestEthereumService()(implicit ipfsWrapper: IpfsWrapper,
   require(requestEthereumArtifact.networks.contains(web3Wrapper.networkName),
     s"RequestEthereum Artifact does not have configuration for network: ${web3Wrapper.networkName}")
 
-  val addressRequestEthereum: String = requestEthereumArtifact.networks(web3Wrapper.networkName).address
+  val addressRequestEthereum: Address = Address(requestEthereumArtifact.networks(web3Wrapper.networkName).address)
   //TODO not sure if we need this
   private val credentials = WalletUtils.loadCredentials("password", "/path/to/walletfile")
   private val requestEthereum: RequestEthereum = RequestEthereum.deploy(web3Wrapper.web3j, credentials,

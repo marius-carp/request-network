@@ -1,6 +1,9 @@
 package com.request.network.lib.artifacts
 
-import com.kifi.macros.jsonstrict
+import play.api.libs.json.Json
 
-@jsonstrict
 case class NetworkArtifact(address: String, blockNumber: Long)
+
+object NetworkArtifact {
+  implicit val networkArtifactFormat = Json.format[NetworkArtifact]
+}

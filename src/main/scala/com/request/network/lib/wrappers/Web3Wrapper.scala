@@ -1,14 +1,13 @@
 package com.request.network.lib.wrappers
-
-import java.util.concurrent.CompletableFuture
-
+import com.micronautics.web3j.{Address, TransactionHash, Web3JScala}
 import com.request.network.lib.config.RequestConfig
-import org.web3j.protocol.core.methods.response.{EthGetTransactionReceipt, EthTransaction}
+import com.request.network.lib.services._
+import org.web3j.protocol.core.methods.response.{Transaction, TransactionReceipt}
 import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.{Web3j, Web3jService}
 import org.web3j.protocol.http.HttpService
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class Web3Wrapper(web3jService: Option[Web3jService], networkId: Option[Int])
@@ -17,6 +16,9 @@ class Web3Wrapper(web3jService: Option[Web3jService], networkId: Option[Int])
   val web3j: Web3j = Web3j.build(web3jService.getOrElse(
     new HttpService(requestConfig.ethereumNodeUrlDefault(requestConfig.ethereumDefault)))
   )
+
+  val web3JScala = new Web3JScala(web3j)
+
   val networkName: String = networkId.map(getNetworkName).getOrElse(requestConfig.ethereumDefault)
 
   def getNetworkName(networkId: Int): String = {
@@ -32,7 +34,11 @@ class Web3Wrapper(web3jService: Option[Web3jService], networkId: Option[Int])
 
   def broadcastMethod() = ???
 
-  def getDefaultAccount(): Future[Any] = ???
+  /**
+    * Get the default account (head of the wallet)
+    * @return Future of the default account
+    */
+  def getDefaultAccount(implicit executionContext: ExecutionContext): Future[Option[Address]] = web3JScala.async.accounts.map(_.headOption)
 
   def toSolidityBytes32(valueType: String, value: Any): Any = ???
 
@@ -54,9 +60,9 @@ class Web3Wrapper(web3jService: Option[Web3jService], networkId: Option[Int])
 
   def setUpOptions(options: Any): Any = ???
 
-  def getTransactionReceipt(hash: String): CompletableFuture[EthGetTransactionReceipt] = web3j.ethGetTransactionReceipt(hash).sendAsync()
+  def getTransactionReceipt(hash: TransactionHash): Future[Option[TransactionReceipt]] = web3JScala.async.transactionReceipt(hash).map(_.asScala)
 
-  def getTransaction(hash: String): CompletableFuture[EthTransaction] = web3j.ethGetTransactionByHash(hash).sendAsync()
+  def getTransaction(hash: TransactionHash): Future[Option[Transaction]] = web3JScala.async.transactionByHash(hash).map(_.asScala)
 
   def getBlockTimestamp(blockNumber: Int): Future[Any] = ???
 
